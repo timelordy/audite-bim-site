@@ -4,7 +4,7 @@ from __future__ import annotations
 from functools import lru_cache
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 
 FPS = 30
@@ -58,22 +58,7 @@ def text(draw, value, x, y, size, color, max_width, centered=False, weight=800):
 def background(width, height, name):
     colors = {'hero': BLUE, 'rules': VIOLET, 'findings': LIME,
               'plan': '#1741E8', 'outro': BLUE, 'bumper': LIME}
-    image = Image.new('RGB', (width, height), colors[name])
-    if name in ('bumper', 'outro'):
-        return image
-    # A colored studio halo frames the architecture without competing with copy.
-    glow = Image.new('RGBA', (width // 4, height // 4), (0, 0, 0, 0))
-    d = ImageDraw.Draw(glow)
-    center = (.72, .51) if width > height else (.5, .67)
-    cx, cy = int(center[0] * glow.width), int(center[1] * glow.height)
-    radius = int(min(glow.size) * .57)
-    d.ellipse((cx-radius, cy-radius, cx+radius, cy+radius),
-              fill=(255, 255, 255, 55))
-    glow = glow.filter(ImageFilter.GaussianBlur(radius * .65))
-    mask = glow.getchannel('A').resize(image.size, Image.Resampling.BILINEAR)
-    light = Image.new('RGB', image.size, '#7C91FF' if name != 'findings' else '#EDFF72')
-    image.paste(light, (0, 0), mask)
-    return image
+    return Image.new('RGB', (width, height), colors[name])
 
 
 def place_model(canvas, layer_path, progress):
