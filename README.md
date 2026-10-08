@@ -1,6 +1,6 @@
 # Audite — launch teaser
 
-Static GitHub Pages site showing a 15-second full-screen motion film. It selects a landscape or portrait MP4 and includes original synthesized audio. Autoplay starts muted; browser controls let visitors unmute or replay.
+Static GitHub Pages site showing a 15-second full-screen motion film. It selects a landscape or portrait MP4 and includes original synthesized audio. Autoplay starts muted; visitors can use the sound button or click the film to pause and resume it.
 
 The building visuals in `production/visual-assets/` are **fictional illustrations**. This repository contains no Revit model, object profile, audit report, client data, or source from the private application repository.
 

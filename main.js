@@ -1,6 +1,7 @@
 const video = document.querySelector('#film');
 const error = document.querySelector('#media-error');
 const fallback = document.querySelector('#download-fallback');
+const soundToggle = document.querySelector('#sound-toggle');
 const portrait = window.matchMedia('(max-width: 700px)');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -25,6 +26,24 @@ function applyMotionPreference() {
 
 video.addEventListener('error', () => { error.hidden = false; });
 video.addEventListener('loadeddata', () => { error.hidden = true; });
+video.addEventListener('click', () => {
+  if (video.paused) video.play().catch(() => {});
+  else video.pause();
+});
+video.addEventListener('keydown', event => {
+  if (event.code === 'Space' || event.code === 'Enter') {
+    event.preventDefault();
+    if (video.paused) video.play().catch(() => {});
+    else video.pause();
+  }
+});
+soundToggle.addEventListener('click', () => {
+  video.muted = !video.muted;
+  soundToggle.classList.toggle('is-muted', video.muted);
+  soundToggle.setAttribute('aria-label', video.muted ? 'Включить звук' : 'Выключить звук');
+  soundToggle.title = video.muted ? 'Включить звук' : 'Выключить звук';
+  if (video.paused) video.play().catch(() => {});
+});
 portrait.addEventListener('change', selectFilm);
 reducedMotion.addEventListener('change', applyMotionPreference);
 applyMotionPreference();

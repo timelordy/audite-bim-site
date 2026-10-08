@@ -14,11 +14,14 @@
 </head>
 <body>
   <main class="screen" aria-label="15-секундный анонс Audite">
-    <video id="film" autoplay muted loop playsinline controls preload="auto"
+    <video id="film" autoplay muted loop playsinline preload="auto" tabindex="0"
       poster="assets/audite-landscape-poster.png"
-      aria-label="Audite: модель под контролем, проверка по правилам, находки, план исправлений и запуск скоро">
+      aria-label="Audite: модель под контролем, проверка по правилам, находки, план исправлений и запуск скоро. Нажмите, чтобы поставить на паузу или продолжить.">
       Ваш браузер не поддерживает видео. <a href="assets/audite-landscape.mp4">Скачайте ролик Audite</a>.
     </video>
+    <button class="sound-toggle is-muted" id="sound-toggle" type="button" aria-label="Включить звук" title="Включить звук">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path class="sound-wave" d="M16 9a4 4 0 0 1 0 6M18.5 6a8 8 0 0 1 0 12"/><path class="mute-slash" d="M3 3l18 18"/></svg>
+    </button>
     <div class="media-error" id="media-error" hidden role="alert">
       <strong>Не удалось загрузить ролик.</strong>
       <a href="assets/audite-landscape.mp4" id="download-fallback" download>Скачать MP4 · 15 секунд</a>
