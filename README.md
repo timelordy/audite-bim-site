@@ -4,7 +4,8 @@ A full-screen GitHub Pages advertisement with a native **3840×2160** desktop
 film, **1080×1920** portrait film, and an HD fallback for devices that cannot
 play UHD smoothly. No text is cropped on unusual screen proportions. The surrounding viewport
 uses the decoded frame background color, synchronized on each presented frame.
-Browsers that cannot sample video pixels use the known scene palette.
+Browsers that cannot sample video pixels use the known scene palette. A subtle
+edge blend removes a hard seam from video display color differences.
 
 Electric blue, violet and acid lime form the visual palette. The fictional
 architectural model rotates, reveals its structure, separates into floors,

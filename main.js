@@ -4,7 +4,7 @@ const fallback = document.querySelector('#download-fallback');
 const soundToggle = document.querySelector('#sound-toggle');
 const portrait = window.matchMedia('(max-aspect-ratio: 1/1)');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const edition = '20261008-v3';
+const edition = '20261008-v4';
 let useHd = false;
 let qualityChecked = false;
 const colorPixel = document.createElement('canvas');
@@ -50,6 +50,7 @@ function followFilmFrame(now, frame) {
 }
 
 function selectFilm() {
+  document.documentElement.style.setProperty('--film-aspect', portrait.matches ? 9 / 16 : 16 / 9);
   const file = portrait.matches ? 'audite-portrait.mp4' :
     (useHd ? 'audite-landscape-hd.mp4' : 'audite-landscape.mp4');
   const poster = portrait.matches ? 'audite-portrait-poster.png' : 'audite-landscape-poster.png';
