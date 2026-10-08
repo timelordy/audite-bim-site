@@ -2,8 +2,11 @@
 from __future__ import annotations
 
 import argparse
+from array import array
 import json
 import subprocess
+import sys
+import wave
 from pathlib import Path
 
 import imageio_ffmpeg
@@ -12,15 +15,59 @@ from PIL import Image, ImageDraw
 from film_design import FPS, LENGTH, compose
 
 MUSIC_START = 16.035  # 120 BPM grid fitted to the source percussion attacks.
+MUSIC_OVERLAP = .5  # One aligned beat; the output stays exactly 30 beats long.
+AUDIO_RATE = 48000
+
+
+def loop_gain(samples, peak):
+    pcm = array('f', samples)
+    if sys.byteorder != 'little':
+        pcm.byteswap()
+    result = subprocess.run(
+        [imageio_ffmpeg.get_ffmpeg_exe(), '-hide_banner', '-f', 'f32le',
+         '-ar', str(AUDIO_RATE), '-ac', '2', '-i', '-',
+         '-af', 'loudnorm=I=-14:TP=-1.5:LRA=7:print_format=json',
+         '-f', 'null', '-'], input=pcm.tobytes(), capture_output=True, check=True)
+    report = result.stderr.decode()
+    loudness, _ = json.JSONDecoder().raw_decode(report[report.rfind('{'):])
+    # Apply one constant gain so normalization cannot change either seam edge.
+    return min(10 ** ((-14 - float(loudness['input_i'])) / 20),
+               (10 ** (-1.5 / 20)) / peak)
 
 
 def prepare_audio(source, output):
-    command = [imageio_ffmpeg.get_ffmpeg_exe(), '-y', '-v', 'error',
-               '-ss', str(MUSIC_START), '-i', str(source), '-t', str(LENGTH),
-               '-af', 'afade=t=in:st=0:d=0.5,afade=t=out:st=14.5:d=0.5,'
-                      'loudnorm=I=-14:TP=-1.5:LRA=7',
-               '-ar', '48000', '-ac', '2', str(output)]
-    subprocess.run(command, check=True)
+    command = [imageio_ffmpeg.get_ffmpeg_exe(), '-v', 'error',
+               '-ss', str(MUSIC_START), '-i', str(source),
+               # Decode a little beyond the cut; resampler timestamps can be a
+               # sample short. Slice to exact PCM counts below.
+               '-t', str(LENGTH + MUSIC_OVERLAP + .01), '-ar', str(AUDIO_RATE),
+               '-ac', '2', '-f', 'f32le', '-']
+    samples = array('f', subprocess.run(command, check=True, capture_output=True).stdout)
+    if sys.byteorder != 'little':
+        samples.byteswap()
+    count = AUDIO_RATE * LENGTH * 2
+    overlap_frames = round(AUDIO_RATE * MUSIC_OVERLAP)
+    if len(samples) < count + overlap_frames * 2:
+        raise ValueError('Soundtrack is too short for the circular crossfade')
+    loop = samples[:count]
+    # Continue the ending into the extra source beat, then blend into the opening.
+    # The first output sample follows the last one naturally, with no silence.
+    for frame in range(overlap_frames):
+        incoming = frame / (overlap_frames - 1)
+        for channel in range(2):
+            index = frame * 2 + channel
+            loop[index] = (samples[count + index] * (1 - incoming)
+                           + samples[index] * incoming)
+    peak = max(abs(value) for value in loop)
+    if peak == 0:
+        raise ValueError('Soundtrack contains only silence')
+    gain = loop_gain(loop, peak)
+    pcm = array('h', (round(value * gain * 32767) for value in loop))
+    if sys.byteorder != 'little':
+        pcm.byteswap()
+    with wave.open(str(output), 'wb') as stream:
+        stream.setparams((2, 2, AUDIO_RATE, 0, 'NONE', 'not compressed'))
+        stream.writeframes(pcm.tobytes())
 
 
 def render_video(width, height, models, audio, output):
@@ -46,7 +93,7 @@ def render_video(width, height, models, audio, output):
 
 
 def review_sheet(models, output, portrait=False, tests=False):
-    times = [0, 1.6, 3.2, 4.8, 7.4, 10.4, 12.8, 14.9]
+    times = [0, 1.6, 4.5, 6.8, 9.5, 11.5, 13.2, 14.9]
     width, height = (1080, 1920) if portrait else (1920, 1080)
     thumb_w, thumb_h = ((270, 480) if portrait else (640, 360))
     sheet = Image.new('RGB', (thumb_w * 4, (thumb_h + 34) * 2), '#252B28')
@@ -93,10 +140,13 @@ def main():
                 'desktop_fallback': [1920, 1080], 'portrait': [1080, 1920],
                 'bumper_copy': 'Это Audite!', 'bumper_count': 3,
                 'loop_bookends': [0, 14], 'entry_hold_seconds': 1.8,
+                'plan_scene': [8.5, 10.5], 'ai_scene': [10.5, 12.5],
+                'ai_copy': 'А может, ИИ исправит сам?',
                 'music': 'Frenzy (no vocal) — ScrewedQueen',
                 'music_source': 'https://pixabay.com/music/242261/',
                 'music_license': 'Pixabay Content License',
-                'music_cut': [MUSIC_START, MUSIC_START + LENGTH],
+                'music_source_window': [MUSIC_START, MUSIC_START + LENGTH + MUSIC_OVERLAP],
+                'music_circular_crossfade_seconds': MUSIC_OVERLAP,
                 'music_bpm_measured': 120}
     (args.out / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
 

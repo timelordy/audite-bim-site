@@ -1,4 +1,4 @@
-import { createFilmStage } from './film-stage.js?v=20261008-v7';
+import { createFilmStage } from './film-stage.js?v=20261008-v8';
 
 const video = document.querySelector('#film');
 const canvas = document.querySelector('#film-stage');
@@ -7,7 +7,7 @@ const fallback = document.querySelector('#download-fallback');
 const soundToggle = document.querySelector('#sound-toggle');
 const portrait = window.matchMedia('(max-aspect-ratio: 1/1)');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const edition = '20261008-v7';
+const edition = '20261008-v8';
 let useHd = false;
 let qualityChecked = false;
 let sourceRun = 0;

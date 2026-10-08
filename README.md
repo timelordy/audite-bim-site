@@ -12,7 +12,10 @@ architectural model rotates, reveals its structure, separates into floors,
 and becomes a plan view. Three identical **“Это Audite!”** bumpers connect
 those scenes. Copy introduces **Audite as an audit of BIM models** and leads with
 **“Проверь модель до стройки.”** Cuts follow the measured 120 BPM percussion grid.
-The opening and final cards are identical, and audio fades through the loop boundary.
+**“Получи план исправлений.”** is immediately followed by the question
+**“А может, ИИ исправит сам?”**, with a lime AI accent on a violet card.
+The opening and final cards are identical. Music loops through a beat-aligned
+0.5-second circular crossfade, preserving the rhythm without an edge fade to silence.
 A quiet 1.8-second entry card precedes playback, which waits for decoded video
 and at least three buffered seconds. Autoplay starts muted; the sound button enables music. Clicking
 the film or pressing Space/Enter pauses and resumes it. Reduced-motion
