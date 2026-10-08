@@ -2,12 +2,15 @@
 
 A full-screen GitHub Pages advertisement with a native **3840×2160** desktop
 film, **1080×1920** portrait film, and an HD fallback for devices that cannot
-play UHD smoothly. No text is cropped on unusual screen proportions.
+play UHD smoothly. No text is cropped on unusual screen proportions. The surrounding viewport
+uses the decoded frame background color, synchronized on each presented frame.
+Browsers that cannot sample video pixels use the known scene palette.
 
 Electric blue, violet and acid lime form the visual palette. The fictional
 architectural model rotates, reveals its structure, separates into floors,
 and becomes a plan view. Three identical **“Это Audite!”** bumpers connect
-those scenes. Autoplay starts muted; the sound button enables music. Clicking
+those scenes. Cuts follow the measured 120 BPM percussion grid; bumper copy
+is in position from its first frame. Autoplay starts muted; the sound button enables music. Clicking
 the film or pressing Space/Enter pauses and resumes it. Reduced-motion
 preferences pause playback.
 

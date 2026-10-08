@@ -11,11 +11,13 @@ from PIL import Image, ImageDraw
 
 from film_design import FPS, LENGTH, compose
 
+MUSIC_START = 16.035  # 120 BPM grid fitted to the source percussion attacks.
+
 
 def prepare_audio(source, output):
     command = [imageio_ffmpeg.get_ffmpeg_exe(), '-y', '-v', 'error',
-               '-ss', '16.02', '-i', str(source), '-t', str(LENGTH),
-               '-af', 'afade=t=in:st=0:d=0.025,afade=t=out:st=14.75:d=0.25,'
+               '-ss', str(MUSIC_START), '-i', str(source), '-t', str(LENGTH),
+               '-af', 'afade=t=in:st=0:d=0.01,afade=t=out:st=14.75:d=0.25,'
                       'loudnorm=I=-14:TP=-1.5:LRA=7',
                '-ar', '48000', '-ac', '2', str(output)]
     subprocess.run(command, check=True)
@@ -93,7 +95,8 @@ def main():
                 'music': 'Frenzy (no vocal) — ScrewedQueen',
                 'music_source': 'https://pixabay.com/music/242261/',
                 'music_license': 'Pixabay Content License',
-                'music_cut': [16.02, 31.02], 'music_bpm_measured': 120}
+                'music_cut': [MUSIC_START, MUSIC_START + LENGTH],
+                'music_bpm_measured': 120}
     (args.out / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
 
 

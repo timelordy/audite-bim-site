@@ -13,7 +13,7 @@ audit finding, or application source is used.
 - Source: https://pixabay.com/music/upbeat-phonk-frenzy-by-screwed-queen-no-vocal-242261/
 - License: Pixabay Content License, https://pixabay.com/service/license-summary/
 - Retrieved: 2026-10-08
-- Usage: a 15-second synchronized excerpt (16.02–31.02 seconds), with a short
+- Usage: a 15-second synchronized excerpt (16.035–31.035 seconds), with a short
   fade and loudness processing, embedded only in the completed advertisement.
 - The original MP3 and intermediate WAV are kept outside this repository.
 - The track is registered with YouTube Content ID. Pixabay permits licensed

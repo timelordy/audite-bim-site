@@ -88,15 +88,14 @@ def place_model(canvas, layer_path, progress):
     canvas.paste(layer, position, layer)
 
 
-def scene_heading(canvas, name, local):
+def scene_heading(canvas, name):
     width, height = canvas.size
     portrait = height > width
     d = ImageDraw.Draw(canvas)
     color = INK if name == 'findings' else PAPER
     x = width * (.09 if portrait else .065)
-    shift = (1 - ease(local / .3)) * height * .013
     if name == 'hero':
-        y = height * (.17 if portrait else .355) + shift
+        y = height * (.17 if portrait else .355)
         text(d, 'Audite', x, y, width * (.215 if portrait else .102), color,
              width * (.82 if portrait else .4))
         text(d, 'Модель под контролем.', x, y + height * (.10 if portrait else .175),
@@ -105,20 +104,20 @@ def scene_heading(canvas, name, local):
         return
     first, second = COPY[name]
     size = width * (.119 if portrait else .062)
-    y = height * (.18 if portrait else .34) + shift
+    y = height * (.18 if portrait else .34)
     line = size * 1.23
     maximum = width * (.82 if portrait else .40)
     text(d, first, x, y, size, color, maximum)
     text(d, second, x, y + line, size, color, maximum)
 
 
-def brand_card(canvas, name, local):
+def brand_card(canvas, name):
     width, height = canvas.size
     portrait = height > width
     d = ImageDraw.Draw(canvas)
     if name == 'bumper':
         size = width * (.115 if portrait else .084)
-        y = height * .46 - (1 - ease(local / .18)) * height * .018
+        y = height * .46
         text(d, 'Это Audite!', width / 2, y, size, INK, width * .84, True)
         return
     text(d, 'Audite', width / 2, height * .335,
@@ -135,10 +134,10 @@ def compose(width, height, frame, model_dir):
     canvas = background(width, height, name).copy()
     local = time - start
     if shot is None:
-        brand_card(canvas, name, local)
+        brand_card(canvas, name)
         return canvas
     progress = local / (end - start)
     model_frame = min(74, round(progress * 74))
     place_model(canvas, model_dir / f'shot-{shot}-{model_frame:03d}.png', progress)
-    scene_heading(canvas, name, local)
+    scene_heading(canvas, name)
     return canvas

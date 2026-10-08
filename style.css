@@ -1,8 +1,8 @@
-:root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif}
+:root{--film-color:#284cff;color-scheme:dark;font-family:Arial,Helvetica,sans-serif}
 *{box-sizing:border-box}
-html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#11154f}
-.screen{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:#11154f}
-video{display:block;width:100%;height:100%;object-fit:contain;background:#11154f}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--film-color)}
+.screen{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:var(--film-color)}
+video{display:block;width:100%;height:100%;object-fit:contain;background:var(--film-color)}
 .sound-toggle{position:absolute;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));z-index:2;display:grid;place-items:center;width:46px;height:46px;border:1px solid #ffffff73;border-radius:50%;background:#05080cb8;color:#fff;cursor:pointer;backdrop-filter:blur(8px)}
 .sound-toggle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
 .sound-toggle.is-muted .sound-wave{display:none}
