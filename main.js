@@ -2,16 +2,20 @@ const video = document.querySelector('#film');
 const error = document.querySelector('#media-error');
 const fallback = document.querySelector('#download-fallback');
 const soundToggle = document.querySelector('#sound-toggle');
-const portrait = window.matchMedia('(max-width: 700px)');
+const portrait = window.matchMedia('(max-aspect-ratio: 1/1)');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const edition = '20261008-v2';
+let useHd = false;
+let qualityChecked = false;
 
 function selectFilm() {
-  const file = portrait.matches ? 'audite-portrait.mp4' : 'audite-landscape.mp4';
+  const file = portrait.matches ? 'audite-portrait.mp4' :
+    (useHd ? 'audite-landscape-hd.mp4' : 'audite-landscape.mp4');
   const poster = portrait.matches ? 'audite-portrait-poster.png' : 'audite-landscape-poster.png';
-  const url = new URL(`assets/${file}`, document.baseURI).href;
+  const url = new URL(`assets/${file}?v=${edition}`, document.baseURI).href;
   if (video.src === url) return;
   video.src = url;
-  video.poster = new URL(`assets/${poster}`, document.baseURI).href;
+  video.poster = new URL(`assets/${poster}?v=${edition}`, document.baseURI).href;
   fallback.href = url;
   error.hidden = true;
   video.load();
@@ -24,8 +28,25 @@ function applyMotionPreference() {
   else video.play().catch(() => {});
 }
 
-video.addEventListener('error', () => { error.hidden = false; });
+video.addEventListener('error', () => {
+  if (!portrait.matches && !useHd) {
+    useHd = true;
+    selectFilm();
+    return;
+  }
+  error.hidden = false;
+});
 video.addEventListener('loadeddata', () => { error.hidden = true; });
+video.addEventListener('timeupdate', () => {
+  if (qualityChecked || portrait.matches || useHd || video.currentTime < 3) return;
+  qualityChecked = true;
+  const quality = video.getVideoPlaybackQuality?.();
+  if (quality?.totalVideoFrames > 60 &&
+      quality.droppedVideoFrames / quality.totalVideoFrames > .15) {
+    useHd = true;
+    selectFilm();
+  }
+});
 video.addEventListener('click', () => {
   if (video.paused) video.play().catch(() => {});
   else video.pause();
