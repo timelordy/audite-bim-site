@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#05080c">
+  <meta name="description" content="Audite — проверка BIM-модели Revit, план исправлений и контроль решений. Скоро на audite-bim.ru.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Audite — скоро">
+  <meta property="og:description" content="Модель под контролем. 15 секунд о проекте Audite.">
+  <meta property="og:image" content="assets/audite-landscape-poster.png">
+  <link rel="stylesheet" href="style.css">
+  <title>Audite — скоро</title>
+</head>
+<body>
+  <main class="screen" aria-label="15-секундный анонс Audite">
+    <video id="film" autoplay muted loop playsinline controls preload="auto"
+      poster="assets/audite-landscape-poster.png"
+      aria-label="Audite: модель под контролем, проверка по правилам, находки, план исправлений и запуск скоро">
+      Ваш браузер не поддерживает видео. <a href="assets/audite-landscape.mp4">Скачайте ролик Audite</a>.
+    </video>
+    <div class="media-error" id="media-error" hidden role="alert">
+      <strong>Не удалось загрузить ролик.</strong>
+      <a href="assets/audite-landscape.mp4" id="download-fallback" download>Скачать MP4 · 15 секунд</a>
+    </div>
+    <noscript><div class="media-error"><strong>Audite скоро.</strong><a href="assets/audite-landscape.mp4">Скачать ролик MP4</a></div></noscript>
+  </main>
+  <script src="main.js" defer></script>
+</body>
+</html>
