@@ -17,7 +17,7 @@ MUSIC_START = 16.035  # 120 BPM grid fitted to the source percussion attacks.
 def prepare_audio(source, output):
     command = [imageio_ffmpeg.get_ffmpeg_exe(), '-y', '-v', 'error',
                '-ss', str(MUSIC_START), '-i', str(source), '-t', str(LENGTH),
-               '-af', 'afade=t=in:st=0:d=0.01,afade=t=out:st=14.75:d=0.25,'
+               '-af', 'afade=t=in:st=0:d=0.5,afade=t=out:st=14.5:d=0.5,'
                       'loudnorm=I=-14:TP=-1.5:LRA=7',
                '-ar', '48000', '-ac', '2', str(output)]
     subprocess.run(command, check=True)
@@ -41,12 +41,12 @@ def render_video(width, height, models, audio, output):
         process.stdin.close()
     if process.wait() != 0:
         raise RuntimeError(f'Video encoder failed: {output}')
-    poster = compose(width, height, 38, models)
+    poster = compose(width, height, 0, models)
     poster.save(output.with_name(output.stem + '-poster.png'), optimize=True)
 
 
 def review_sheet(models, output, portrait=False, tests=False):
-    times = [1.2, 2.8, 4.8, 6.3, 8.2, 9.8, 11.8, 14]
+    times = [0, 1.6, 3.2, 4.8, 7.4, 10.4, 12.8, 14.9]
     width, height = (1080, 1920) if portrait else (1920, 1080)
     thumb_w, thumb_h = ((270, 480) if portrait else (640, 360))
     sheet = Image.new('RGB', (thumb_w * 4, (thumb_h + 34) * 2), '#252B28')
@@ -92,6 +92,7 @@ def main():
     manifest = {'duration': LENGTH, 'fps': FPS, 'desktop': [3840, 2160],
                 'desktop_fallback': [1920, 1080], 'portrait': [1080, 1920],
                 'bumper_copy': 'Это Audite!', 'bumper_count': 3,
+                'loop_bookends': [0, 14], 'entry_hold_seconds': 1.8,
                 'music': 'Frenzy (no vocal) — ScrewedQueen',
                 'music_source': 'https://pixabay.com/music/242261/',
                 'music_license': 'Pixabay Content License',

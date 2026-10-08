@@ -16,15 +16,17 @@ BLUE = '#284CFF'
 VIOLET = '#6D31F4'
 FONT = Path(__file__).parent / 'fonts' / 'Manrope.ttf'
 TIMELINE = [
-    (0, 2.5, 'hero', 0), (2.5, 3.5, 'bumper', None),
-    (3.5, 6, 'rules', 1), (6, 7, 'bumper', None),
-    (7, 9.5, 'findings', 2), (9.5, 10.5, 'bumper', None),
-    (10.5, 13, 'plan', 3), (13, 15, 'outro', None),
+    (0, 1, 'bookend', None), (1, 3, 'hero', 0),
+    (3, 3.5, 'bumper', None), (3.5, 6, 'rules', 1),
+    (6, 6.5, 'bumper', None), (6.5, 9, 'findings', 2),
+    (9, 9.5, 'bumper', None), (9.5, 12, 'plan', 3),
+    (12, 14, 'outro', None), (14, 15, 'bookend', None),
 ]
 COPY = {
-    'rules': ('Проверка', 'по правилам.'),
-    'findings': ('Находки', 'в фокусе.'),
-    'plan': ('План', 'исправлений.'),
+    'hero': ('Проверь модель', 'до стройки.'),
+    'rules': ('Найди ошибки', 'в модели.'),
+    'findings': ('Разберись,', 'что исправить.'),
+    'plan': ('Получи план', 'исправлений.'),
 }
 
 
@@ -57,7 +59,7 @@ def text(draw, value, x, y, size, color, max_width, centered=False, weight=800):
 @lru_cache(maxsize=8)
 def background(width, height, name):
     colors = {'hero': BLUE, 'rules': VIOLET, 'findings': LIME,
-              'plan': '#1741E8', 'outro': BLUE, 'bumper': LIME}
+              'plan': '#1741E8', 'outro': BLUE, 'bookend': BLUE, 'bumper': LIME}
     return Image.new('RGB', (width, height), colors[name])
 
 
@@ -79,19 +81,13 @@ def scene_heading(canvas, name):
     d = ImageDraw.Draw(canvas)
     color = INK if name == 'findings' else PAPER
     x = width * (.09 if portrait else .065)
-    if name == 'hero':
-        y = height * (.17 if portrait else .355)
-        text(d, 'Audite', x, y, width * (.215 if portrait else .102), color,
-             width * (.82 if portrait else .4))
-        text(d, 'Модель под контролем.', x, y + height * (.10 if portrait else .175),
-             width * (.051 if portrait else .0215), LIME,
-             width * (.82 if portrait else .4), weight=550)
-        return
     first, second = COPY[name]
     size = width * (.119 if portrait else .062)
     y = height * (.18 if portrait else .34)
-    line = size * 1.23
     maximum = width * (.82 if portrait else .40)
+    longest = max(font(size).getlength(value) for value in (first, second))
+    size *= min(1, maximum / longest)
+    line = size * 1.23
     text(d, first, x, y, size, color, maximum)
     text(d, second, x, y + line, size, color, maximum)
 
@@ -105,8 +101,14 @@ def brand_card(canvas, name):
         y = height * .46
         text(d, 'Это Audite!', width / 2, y, size, INK, width * .84, True)
         return
-    text(d, 'Audite', width / 2, height * .335,
+    text(d, 'Audite', width / 2, height * .31,
          width * (.215 if portrait else .14), PAPER, width * .82, True)
+    if name == 'bookend':
+        size = width * (.050 if portrait else .023)
+        y = height * (.49 if portrait else .59)
+        text(d, 'Аудит BIM-моделей', width / 2, y,
+             size, PAPER, width * .84, True, 550)
+        return
     text(d, 'Скоро.', width / 2, height * (.505 if portrait else .59),
          width * (.066 if portrait else .029), LIME, width * .80, True, 650)
     text(d, 'audite-bim.ru', width / 2, height * (.595 if portrait else .685),
